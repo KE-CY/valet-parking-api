@@ -4,5 +4,5 @@
 # Env
 
 ```
-node.js >= 22.17.0clear
+node.js >= 22.17.0
 ```
