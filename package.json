@@ -1,0 +1,33 @@
+{
+  "name": "valet-parking-api",
+  "version": "1.0.0",
+  "description": "valet parking backend api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KE-CY/valet-parking-api.git"
+  },
+  "author": "kelly (KE-CY)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KE-CY/valet-parking-api/issues"
+  },
+  "homepage": "https://github.com/KE-CY/valet-parking-api#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10",
+    "pino": "^9.7.0",
+    "pino-pretty": "^13.0.0"
+  }
+}
