@@ -28,9 +28,6 @@ export class User {
   @Column({ name: 'employee_no' })
   employeeNo?: string;
 
-  @Column({ name: 'is_microsoft_sso', default: false })
-  isMicrosoftSso!: boolean;
-
   @Column({ name: 'is_active', default: true })
   isActive!: boolean;
 
