@@ -9,6 +9,24 @@ import { ErrorCodes } from "../../utils/errorCodes";
 import { UserRepository, userRepository } from "../../repositories/userRepository";
 
 export class UserService extends BasicMethod {
+
+  static async loginLocalStrategy(username: string, password: string): Promise<User> {
+    logger.debug('In UserService.loginLocalStrategy', { username });
+
+    const user = await userRepository.findOne({ where: { username, isActive: true } });
+    if (!user) {
+      throw new Error(ErrorCodes.LOGIN_ERROR.message);
+    }
+
+    const isPasswordValid = bcrypt.compareSync(password, String(user.password));
+
+    if (!isPasswordValid) {
+      throw new Error(ErrorCodes.LOGIN_ERROR.message);
+    }
+
+    return user;
+  }
+
   static async validateUserExistByUsername(username?: string): Promise<void> {
     logger.info('In UserService.validateUserExistByUsername', { username });
 

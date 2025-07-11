@@ -18,5 +18,9 @@ export const ErrorCodes = {
   USER_NAME_ALREADY_EXISTS: {
     code: 'ERROR_USER_NAME_ALREADY_EXISTS',
     message: 'Username already exists. Please choose a different one.'
+  },
+  LOGIN_ERROR: {
+    code: 'ERROR_LOGIN',
+    message: 'Oops! Your login details are incorrect. Please try again.'
   }
 }
