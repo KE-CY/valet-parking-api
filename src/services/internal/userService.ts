@@ -1,0 +1,49 @@
+import bcrypt from 'bcrypt';
+import { QueryRunner } from "typeorm";
+import { BasicMethod } from "../../utils/basicMethod";
+import { User } from "../../entities/User";
+import logger from "../../utils/logger";
+import { ValidationError } from "../../utils/customError";
+import _ from 'lodash';
+import { ErrorCodes } from "../../utils/errorCodes";
+import { UserRepository, userRepository } from "../../repositories/userRepository";
+
+export class UserService extends BasicMethod {
+  static async validateUserExistByUsername(username?: string): Promise<void> {
+    logger.info('In UserService.validateUserExistByUsername', { username });
+
+    if (!username) {
+      logger.error('Username not provided');
+      throw new ValidationError('Username is required');
+    }
+
+    const user = await userRepository.findOne({
+      where: { username },
+    });
+
+    if (!_.isEmpty(user)) {
+      logger.debug('username already exists', { username });
+      throw new ValidationError(ErrorCodes.USER_NAME_ALREADY_EXISTS.message);
+    }
+  }
+
+  static async createUser(
+    { queryRunner, userData }: { queryRunner: QueryRunner, userData: Partial<User> }
+  ) {
+    logger.debug('In UserService.createUser', { userData });
+    const { username, password } = userData;
+
+    await UserService.validateUserExistByUsername(username);
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password!, salt);
+
+    const createData: Partial<User> = {
+      ...userData,
+      salt,
+      password: hashedPassword,
+    };
+    await UserRepository.createUserWithTransaction({ queryRunner, createData });
+
+  }
+}

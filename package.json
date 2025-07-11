@@ -18,7 +18,10 @@
   },
   "homepage": "https://github.com/KE-CY/valet-parking-api#readme",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.3",
+    "@types/joi": "^17.2.2",
+    "@types/lodash": "^4.17.20",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.0.12",
     "ts-node": "^10.9.2",
@@ -26,8 +29,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.844.0",
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "express": "^5.1.0",
+    "joi": "^17.13.3",
+    "lodash": "^4.17.21",
     "multer": "^2.0.1",
     "nodemon": "^3.1.10",
     "pg": "^8.16.3",
