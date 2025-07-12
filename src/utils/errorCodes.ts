@@ -22,5 +22,9 @@ export const ErrorCodes = {
   LOGIN_ERROR: {
     code: 'ERROR_LOGIN',
     message: 'Oops! Your login details are incorrect. Please try again.'
+  },
+  SYSTEM_COUNTRY_NOT_FOUND: {
+    code: 'ERROR_SYSTEM_COUNTRY_NOT_EXISTS',
+    message: 'We couldn’t find the selected country. Please check and try again.',
   }
 }
