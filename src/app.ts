@@ -1,14 +1,16 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { AppDataSource } from './config/typeorm-config';
+import logger from './utils/logger';
+import session from 'express-session';
+import { errorHandler } from './middlewares/errorHandler';
+import './config/passport';
 
 import healthRoutes from './routes/healthRoute';
-import logger from './utils/logger';
+import userRoutes from './routes/userRoute';
+import appRoutes from './routes/authRoute';
 
 const app = express();
-
-app.use(bodyParser.urlencoded({ extended: true, limit: '1tb' }));
-app.use(bodyParser.json({ limit: '1tb' }));
 
 // Initialize TypeORM
 AppDataSource.initialize()
@@ -16,10 +18,26 @@ AppDataSource.initialize()
     logger.info('TypeORM: Data Source has been initialized!');
   })
   .catch((err) => {
-    logger.error(`TypeORM: Error during Data Source initialization: ${err.message}`, { stack: err.stack }); 
-   });
+    logger.error(`TypeORM: Error during Data Source initialization: ${err.message}`, { stack: err.stack });
+  });
+
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true, limit: '1tb' }));
+app.use(bodyParser.json({ limit: '1tb' }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Routes
 app.use('/health', healthRoutes);
+app.use('/auth', appRoutes);
+app.use('/users', userRoutes);
+
+// Error handling middleware
+app.use(errorHandler);
 
 export default app;
