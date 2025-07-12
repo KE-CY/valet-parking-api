@@ -9,6 +9,7 @@ import './config/passport';
 import healthRoutes from './routes/healthRoute';
 import userRoutes from './routes/userRoute';
 import appRoutes from './routes/authRoute';
+import systemRoutes from './routes/systemRoutes'
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use(
 app.use('/health', healthRoutes);
 app.use('/auth', appRoutes);
 app.use('/users', userRoutes);
+app.use('/systems', systemRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
