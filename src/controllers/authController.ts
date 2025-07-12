@@ -4,11 +4,7 @@ import { ApiResponse } from '../utils/responseModel';
 import logger from '../utils/logger';
 import { AuthService } from '../services/internal/authService';
 
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, id } = req.user as User;
     const token = AuthService.generateToken({ id, username } as User);
@@ -19,3 +15,14 @@ export const login = async (
     next(error);
   }
 };
+
+export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { refreshToken } = req.body;
+    const token = AuthService.refreshTokens(refreshToken);
+    return res.json(new ApiResponse('success', 'OK', token));
+  } catch (error) {
+    logger.error('Error refresh token.', error);
+    next(error);
+  }
+}
