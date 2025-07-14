@@ -3,12 +3,28 @@ import { QueryRunner } from "typeorm";
 import { BasicMethod } from "../../utils/basicMethod";
 import { User } from "../../entities/User";
 import logger from "../../utils/logger";
-import { ValidationError } from "../../utils/customError";
+import { NotFoundError, ValidationError } from "../../utils/customError";
 import _ from 'lodash';
 import { ErrorCodes } from "../../utils/errorCodes";
 import { UserRepository, userRepository } from "../../repositories/userRepository";
 
 export class UserService extends BasicMethod {
+   static async getReqUser(id: number): Promise<User> {
+    logger.info('In UserService.getReqUser', { id });
+    const user = await userRepository.findOne({
+      where: { id },
+      select: ['id', 'name'],
+    });
+
+    if (_.isEmpty(user)) {
+      logger.error('In UserService.getReqUser', {
+        message: `User with id ${id} does not exist or is inactive.`,
+      });
+      throw new NotFoundError(ErrorCodes.USER_NOT_FOUND.message);
+    }
+
+    return user;
+  }
 
   static async loginLocalStrategy(username: string, password: string): Promise<User> {
     logger.debug('In UserService.loginLocalStrategy', { username });
