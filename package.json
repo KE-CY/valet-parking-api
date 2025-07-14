@@ -1,6 +1,6 @@
 {
   "name": "valet-parking-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "valet parking backend api",
   "main": "index.js",
   "scripts": {

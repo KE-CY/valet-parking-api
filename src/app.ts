@@ -10,6 +10,7 @@ import healthRoutes from './routes/healthRoute';
 import userRoutes from './routes/userRoute';
 import appRoutes from './routes/authRoute';
 import systemRoutes from './routes/systemRoutes'
+import fileRoutes from './routes/fileRoutes';
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/health', healthRoutes);
 app.use('/auth', appRoutes);
 app.use('/users', userRoutes);
 app.use('/systems', systemRoutes);
+app.use('/files', fileRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
