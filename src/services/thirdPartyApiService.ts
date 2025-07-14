@@ -35,11 +35,19 @@ export class ThirdPartyApiService {
       requestData[field] = input[field];
     }
 
+    let apiUrl = config.apiUrl;
+    if (config.pathParams) {
+      for (const [paramName, inputKey] of Object.entries(config.pathParams)) {
+        const value = input[inputKey];
+        apiUrl = apiUrl.replace(`:${paramName}`, encodeURIComponent(value ?? ''));
+      }
+    }
+
     let raw: any;
     try {
       const axiosConfig: AxiosRequestConfig = {
         method: config.method,
-        url: config.apiUrl,
+        url: apiUrl,
         headers,
         ...(config.method === 'GET'
           ? { params: requestData }

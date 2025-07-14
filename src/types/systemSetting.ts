@@ -12,6 +12,7 @@ export type ApiConfig = {
   request: {
     fields: string[];
   };
+  pathParams?: Record<string, string>;
   credentials?: {
     username: string;
     password: string;
