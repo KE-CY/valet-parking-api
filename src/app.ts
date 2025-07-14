@@ -11,6 +11,7 @@ import userRoutes from './routes/userRoute';
 import appRoutes from './routes/authRoute';
 import systemRoutes from './routes/systemRoutes'
 import fileRoutes from './routes/fileRoutes';
+import valetParkingRoutes from './routes/valetParkingRoutes';
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/auth', appRoutes);
 app.use('/users', userRoutes);
 app.use('/systems', systemRoutes);
 app.use('/files', fileRoutes);
+app.use('/valetParkings', valetParkingRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

@@ -26,5 +26,14 @@ export const ErrorCodes = {
   SYSTEM_COUNTRY_NOT_FOUND: {
     code: 'ERROR_SYSTEM_COUNTRY_NOT_EXISTS',
     message: 'We couldn’t find the selected country. Please check and try again.',
+  },
+  USER_NOT_FOUND: {
+    code: 'ERROR_USER_NOT_EXISTS',
+    message: 'We couldn’t find an account with that information.'
+  },
+  VALET_PARKING_RECORD_NOT_FOUND: {
+    code: 'ERROR_VALET_RECORD_NOT_FOUND',
+    message: 'We couldn’t find any valet parking records for this request.'
   }
+
 }
