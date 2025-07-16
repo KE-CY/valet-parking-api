@@ -42,7 +42,6 @@ export const validateRequestParams = (schema: Joi.ObjectSchema) => {
           )
         );
     }
-    req.params = value;
     next();
   };
 };
@@ -63,7 +62,6 @@ export const validateRequestQuery = (schema: Joi.ObjectSchema) => {
           )
         );
     }
-    req.params = value;
     next();
   };
 };
