@@ -12,6 +12,7 @@ import { getPaginatedIds, paginateAndSortByIds, PaginatedResponseInterface, Pagi
 import { ThirdPartyApiService } from "../thirdPartyApiService";
 import { SystemSettingService } from "./systemSettingService";
 import { SystemSettingApiConfigKey } from "../../constants/systemSettingKey";
+import { ParkingStatus } from "../../enums/valetParkingRecordEnum";
 
 export class ValetParkingRecordService extends BasicMethod {
   static entity = 'valetParkingRecord';
@@ -66,7 +67,7 @@ export class ValetParkingRecordService extends BasicMethod {
   }
 
   static async getOneById(id: number): Promise<ValetParkingRecord | null> {
-    logger.info('In ValetParkingRecordService.getOneById', { id });
+    logger.info({ msg: 'In ValetParkingRecordService.getOneById', id });
 
     const valetParkingRecordsQueryBuilderRepository = valetParkingRecordRepository.createQueryBuilder('valetParkingRecord');
     const valetParkingRecord = await valetParkingRecordsQueryBuilderRepository
@@ -99,19 +100,19 @@ export class ValetParkingRecordService extends BasicMethod {
   }
 
   static async validateParkingSpotPreconditions(id: number) {
-    logger.info('In ValetParkingRecordService.validateParkingSpotPreconditions', { id });
+    logger.info({ msg: 'In ValetParkingRecordService.validateParkingSpotPreconditions', id });
 
     const valetParkingRecord = await valetParkingRecordRepository.findOne({
       where: { id },
     });
 
     if (_.isEmpty(valetParkingRecord)) {
-      logger.error('Valet parking record not found', { id });
+      logger.error({ msg: 'Valet parking record not found', id });
       throw new NotFoundError(ErrorCodes.VALET_PARKING_RECORD_NOT_FOUND.message);
     }
 
     if (valetParkingRecord.parkingStatus !== 'PARKING') {
-      logger.error('Parking spot is not currently occupied', { id });
+      logger.error({ msg: 'Parking spot is not currently occupied', id });
       throw new ValidationError('Parking spot is not currently occupied');
     }
   }
@@ -125,7 +126,7 @@ export class ValetParkingRecordService extends BasicMethod {
     valetParkingRecord: Partial<ValetParkingRecord>,
     reqUser: User
   }): Promise<ValetParkingRecord> {
-    logger.info('In ValetParkingRecordService.createValetParkingRecordWithTransaction', { valetParkingRecord });
+    logger.info({ msg: 'In ValetParkingRecordService.createValetParkingRecordWithTransaction', valetParkingRecord });
 
     const createData: Partial<ValetParkingRecord> = {
       ...valetParkingRecord,
@@ -152,7 +153,7 @@ export class ValetParkingRecordService extends BasicMethod {
     updateData: Partial<ValetParkingRecord>,
     reqUser: User
   }): Promise<void> {
-    logger.info('In ValetParkingRecordService.updateValetParkingRecordWithTransaction', { id, updateData });
+    logger.info({ msg: 'In ValetParkingRecordService.updateValetParkingRecordWithTransaction', id, updateData });
 
     const set = {
       ..._.omitBy(updateData, _.isUndefined),
@@ -167,7 +168,7 @@ export class ValetParkingRecordService extends BasicMethod {
   }
 
   static async getList(paginationQuery: PaginationQueryInterface): Promise<PaginatedResponseInterface<ValetParkingRecord>> {
-    logger.info('In ValetParkingRecordService.getList');
+    logger.info({ msg: 'In ValetParkingRecordService.getList' });
 
     const ids = await getPaginatedIds<ValetParkingRecord>(
       valetParkingRecordRepository,
@@ -212,43 +213,63 @@ export class ValetParkingRecordService extends BasicMethod {
   }
 
   static async validateValetParkingRecordExists(id: number): Promise<void> {
-    logger.info('In ValetParkingRecordService.validateValetParkingRecordExists', { id });
+    logger.info({ msg: 'In ValetParkingRecordService.validateValetParkingRecordExists', id });
 
     const valetParkingRecord = await valetParkingRecordRepository.findOne({
       where: { id },
     });
 
     if (_.isEmpty(valetParkingRecord)) {
-      logger.error('Valet parking record not found', { id });
+      logger.error({ msg: 'Valet parking record not found', id });
       throw new NotFoundError(ErrorCodes.VALET_PARKING_RECORD_NOT_FOUND.message);
     }
   }
 
   static async validateHandoverKeyPreconditions(id: number): Promise<void> {
-    logger.info('In ValetParkingRecordService.validateHandoverKeyPreconditions', { id });
+    logger.info({ msg: 'In ValetParkingRecordService.validateHandoverKeyPreconditions', id });
 
     const valetParkingRecord = await valetParkingRecordRepository.findOne({
       where: { id },
     });
 
     if (_.isEmpty(valetParkingRecord)) {
-      logger.error('Valet parking record not found', { id });
+      logger.error({ msg: 'Valet parking record not found', id });
       throw new NotFoundError(ErrorCodes.VALET_PARKING_RECORD_NOT_FOUND.message);
     }
 
     if (valetParkingRecord.paymentStatus !== 'PAID') {
-      logger.error('Cannot hand over key, payment status is not PAID', { id });
+      logger.error({ msg: 'Cannot hand over key, payment status is not PAID', id });
       throw new ValidationError('Cannot hand over key, payment status is not PAID');
     }
 
     if (valetParkingRecord.parkingStatus !== 'RETURNED') {
-      logger.error('Cannot hand over key, parking status is not RETURNED', { id });
+      logger.error({ msg: 'Cannot hand over key, parking status is not RETURNED', id });
       throw new ValidationError('Cannot hand over key, parking status is not RETURNED');
     }
   }
 
+  static async validatePaidStatus(id: number): Promise<void> {
+    logger.info({ msg: 'In ValetParkingRecordService.validatePaidStatus', id });
+
+    const valetParkingRecord = await valetParkingRecordRepository.findOne({
+      where: { id },
+    });
+
+    if (_.isEmpty(valetParkingRecord)) {
+      logger.error({ msg: 'Valet parking record not found', id, valetParkingRecord });
+      throw new NotFoundError(ErrorCodes.VALET_PARKING_RECORD_NOT_FOUND.message);
+    }
+
+    const currentParkingStatus = valetParkingRecord.parkingStatus
+    const allowedStatus = [ParkingStatus.RESERVED, ParkingStatus.RETURNED];
+    if (!_.includes(allowedStatus, currentParkingStatus)) {
+      logger.error({ msg: 'Valet parking record status error', valetParkingRecord });
+      throw new ValidationError('Invalid valet parking status.');
+    }
+  }
+
   static async getValetParkingMembership(memberId: string) {
-    logger.info('In ValetParkingRecordService.getValetParkingMembership', { memberId });
+    logger.info({ msg: 'In ValetParkingRecordService.getValetParkingMembership', memberId });
 
     const config = await SystemSettingService.getApiConfig(SystemSettingApiConfigKey.GET_MEMBER_INFO);
 
@@ -258,7 +279,7 @@ export class ValetParkingRecordService extends BasicMethod {
       return await ThirdPartyApiService.call(config, { memberNo: memberId, token });
     } catch (err: any) {
       if (err.response && err.response.status === 404) {
-        logger.warn('Member not found in third-party system', { memberId });
+        logger.warn({ msg: 'Member not found in third-party system', memberId });
         return null; // 如果找不到會員，返回 null
       }
       throw err;

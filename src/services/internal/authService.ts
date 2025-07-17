@@ -18,7 +18,7 @@ export class AuthService {
   };
 
   static verifyRefreshToken(token: string) {
-    logger.debug('In AuthService.verifyRefreshToken');
+    logger.debug({ msg: 'In AuthService.verifyRefreshToken' });
     try {
       const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as jwt.JwtPayload;
       return payload;
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   static refreshTokens(refreshToken: string) {
-    logger.debug('In AuthService.refreshTokens');
+    logger.debug({ msg: 'In AuthService.refreshTokens' });
     const payload = AuthService.verifyRefreshToken(refreshToken);
     if (!payload) {
       throw new Error('Invalid refresh token');

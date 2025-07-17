@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../config/multer-config';
-import { getList, getOneById, getValetParkingMembership, handOverKey, setParkingSpot, setReserved, setReturned, valetParkingRegister, valetParkingScan } from '../controllers/valetParkingController';
+import { getList, getOneById, getValetParkingMembership, handOverKey, setPaid, setParkingSpot, setReserved, setReturned, valetParkingRegister, valetParkingScan } from '../controllers/valetParkingController';
 import { authenticateJWT } from '../middlewares/authMiddleware';
 import { pathParamByIdValidation, valetParkingMembershipValidation, valetParkingRegisterValidation, valetParkingReservedValidation, valetParkingSpotValidation } from '../middlewares/valetParkingMiddleware';
 
@@ -17,5 +17,6 @@ router.put('/:id/parkingSpot', authenticateJWT, pathParamByIdValidation, valetPa
 router.put('/:id/reserved', authenticateJWT, pathParamByIdValidation, valetParkingReservedValidation, setReserved);
 router.put('/:id/handOverKey', authenticateJWT, pathParamByIdValidation, handOverKey);
 router.put('/:id/returned', authenticateJWT, pathParamByIdValidation, setReturned);
+router.put('/:id/paid', authenticateJWT, pathParamByIdValidation, setPaid);
 
 export default router;

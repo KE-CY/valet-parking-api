@@ -14,7 +14,7 @@ export class FileService {
     },
     type: string
   ) {
-    logger.debug('In FileService.uploadFiles');
+    logger.debug({ msg: 'In FileService.uploadFiles' });
 
     const uploadedFiles = await uploadFilesToMinio(files, type);
 

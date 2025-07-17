@@ -11,7 +11,7 @@ export class UserRepository extends Repository<User> {
   static async createUserWithTransaction(
     { queryRunner, createData }: { queryRunner: QueryRunner, createData: Partial<User> }
   ): Promise<void> {
-    logger.info('In UserRepository.createUserWithTransaction', { createData });
+    logger.info({ msg: 'In UserRepository.createUserWithTransaction', createData });
 
     const userRepository = queryRunner.manager.getRepository(User);
 

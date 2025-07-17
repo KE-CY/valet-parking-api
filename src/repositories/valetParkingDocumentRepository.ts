@@ -15,7 +15,7 @@ export class ValetParkingDocumentRepository extends Repository<ValetParkingDocum
     queryRunner: QueryRunner,
     createData: Partial<ValetParkingDocument>[],
   }): Promise<ValetParkingDocument[]> {
-    logger.info('In ValetParkingDocumentRepository.createValetParkingDocumentsWithTransaction', { createData });
+    logger.info({ msg: 'In ValetParkingDocumentRepository.createValetParkingDocumentsWithTransaction', createData });
 
     const valetParkingDocumentRepository = queryRunner.manager.getRepository(ValetParkingDocument);
 

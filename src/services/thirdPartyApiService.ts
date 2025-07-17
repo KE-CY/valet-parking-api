@@ -18,7 +18,8 @@ export class ThirdPartyApiService {
   }
 
   static async call(config: ApiConfig, input: Record<string, any>): Promise<Record<string, any>> {
-    logger.info('In ThirdPartyApiService.call', {
+    logger.info({
+      msg: 'In ThirdPartyApiService.call',
       apiUrl: config.apiUrl,
       method: config.method,
       requestFields: config.request.fields,
@@ -54,7 +55,7 @@ export class ThirdPartyApiService {
           : { data: requestData }),
       };
 
-      logger.info('Third-party API config', axiosConfig);
+      logger.info({ msg: 'Third-party API config', axiosConfig });
 
       const response = await axios(axiosConfig);
 
@@ -64,7 +65,8 @@ export class ThirdPartyApiService {
       raw = response.data;
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
-        logger.error('Third-party API call failed', {
+        logger.error({
+          msg: 'Third-party API call failed',
           message: err.message,
           status: err.response?.status,
           url: err.config?.url,
@@ -74,14 +76,14 @@ export class ThirdPartyApiService {
               : err.response?.data
         });
       } else {
-        logger.error('Unexpected error in third-party API call', { error: String(err) });
+        logger.error({ msg: 'Unexpected error in third-party API call', error: String(err) });
       }
       throw err;
     }
 
     const result: Record<string, any> = {};
 
-    logger.debug('Raw response from third-party API', raw);
+    logger.debug({ msg: 'Raw response from third-party API', raw });
     // 3. 回傳欄位 mapping
     if (config.response.map) {
       for (const [targetField, sourcePath] of Object.entries(config.response.map)) {
@@ -107,7 +109,7 @@ export class ThirdPartyApiService {
   }
 
   static async loginToVendor(): Promise<{ token: string; refreshToken?: string }> {
-    logger.debug('In ThirdPartyApiService.loginToVendor')
+    logger.debug({ msg: 'In ThirdPartyApiService.loginToVendor' })
     const config = await SystemSettingService.getApiConfig(SystemSettingApiConfigKey.LOGIN_AND_GET_TOKEN);
 
     if (!config.credentials) {

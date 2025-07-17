@@ -15,7 +15,7 @@ export class ValetParkingRecordRepository extends Repository<ValetParkingRecord>
     queryRunner: QueryRunner,
     createData: Partial<ValetParkingRecord>
   }): Promise<ValetParkingRecord> {
-    logger.info('In ValetParkingRecordRepository.createValetParkingRecordWithTransaction', { createData });
+    logger.info({ msg: 'In ValetParkingRecordRepository.createValetParkingRecordWithTransaction', createData });
 
     const valetParkingRecordsRepository = queryRunner.manager.getRepository(ValetParkingRecord);
 
@@ -34,7 +34,7 @@ export class ValetParkingRecordRepository extends Repository<ValetParkingRecord>
     id: number,
     set: Partial<ValetParkingRecord>
   }): Promise<void> {
-    logger.info('In ValetParkingRecordRepository.updateValetParkingRecordWithTransaction', { id, set });
+    logger.info({ msg: 'In ValetParkingRecordRepository.updateValetParkingRecordWithTransaction', id, set });
 
     const valetParkingRecordRepository = queryRunner.manager.getRepository(ValetParkingRecord);
 
