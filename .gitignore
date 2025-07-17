@@ -26,3 +26,6 @@ config/settings.json
 # Ignore vscode settings
 .vscode/
 .qodo
+
+# Ignore docker-compose
+docker-compose.yml
