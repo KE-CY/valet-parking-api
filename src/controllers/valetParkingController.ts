@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import _ from "lodash";
 import { QueryRunner } from "typeorm";
 import { AppDataSource } from "../config/typeorm-config";
-import { ParkingStatus } from "../enums/valetParkingRecordEnum";
+import { ParkingStatus, PaymentStatus } from "../enums/valetParkingRecordEnum";
 import { MemberVehiclesService } from "../services/internal/memberVehiclesService";
 import { SystemCountryService } from "../services/internal/systemCountryService";
 import { UserService } from "../services/internal/userService";
@@ -299,6 +299,44 @@ export const setReturned = async (
     res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecord));
   } catch (error) {
     logger.error("Error in setReturned:", error);
+    await queryRunner.rollbackTransaction();
+    next(error);
+  } finally {
+    await queryRunner.release();
+  }
+}
+
+export const setPaid = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const queryRunner: QueryRunner = AppDataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+
+  const reqUser = await UserService.getReqUser(Number(_.get(req, 'user.id')));
+  const { id } = req.params;
+
+  try {
+    await ValetParkingRecordService.validatePaidStatus(Number(id));
+
+    await ValetParkingRecordService.updateValetParkingRecordWithTransaction({
+      queryRunner,
+      id: Number(id),
+      updateData: {
+        paymentStatus: PaymentStatus.PAID,
+      },
+      reqUser
+    });
+
+    await queryRunner.commitTransaction();
+
+    const valetParkingRecord = await ValetParkingRecordService.getOneById(Number(id));
+
+    res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecord));
+  } catch (error) {
+    logger.error({ msg: "Error in setPaid:", error });
     await queryRunner.rollbackTransaction();
     next(error);
   } finally {

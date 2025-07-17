@@ -12,6 +12,7 @@ import { getPaginatedIds, paginateAndSortByIds, PaginatedResponseInterface, Pagi
 import { ThirdPartyApiService } from "../thirdPartyApiService";
 import { SystemSettingService } from "./systemSettingService";
 import { SystemSettingApiConfigKey } from "../../constants/systemSettingKey";
+import { ParkingStatus } from "../../enums/valetParkingRecordEnum";
 
 export class ValetParkingRecordService extends BasicMethod {
   static entity = 'valetParkingRecord';
@@ -244,6 +245,26 @@ export class ValetParkingRecordService extends BasicMethod {
     if (valetParkingRecord.parkingStatus !== 'RETURNED') {
       logger.error('Cannot hand over key, parking status is not RETURNED', { id });
       throw new ValidationError('Cannot hand over key, parking status is not RETURNED');
+    }
+  }
+
+  static async validatePaidStatus(id: number): Promise<void> {
+    logger.info('In ValetParkingRecordService.validatePaidStatus', { id });
+
+    const valetParkingRecord = await valetParkingRecordRepository.findOne({
+      where: { id },
+    });
+
+    if (_.isEmpty(valetParkingRecord)) {
+      logger.error({ msg: 'Valet parking record not found', id, valetParkingRecord });
+      throw new NotFoundError(ErrorCodes.VALET_PARKING_RECORD_NOT_FOUND.message);
+    }
+
+    const currentParkingStatus = valetParkingRecord.parkingStatus
+    const allowedStatus = [ParkingStatus.RESERVED, ParkingStatus.RETURNED];
+    if (!_.includes(allowedStatus, currentParkingStatus)) {
+      logger.error({ msg: 'Valet parking record status error', valetParkingRecord });
+      throw new ValidationError('Invalid valet parking status.');
     }
   }
 
