@@ -19,7 +19,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     res.status(200).json(new ApiResponse('success', 'OK', { msg: 'Registered successfully!' }));
 
   } catch (error) {
-    logger.error('Error in register:', error);
+    logger.error({ msg: 'Error in register:', error });
     await queryRunner.rollbackTransaction();
     next(error);
   } finally {

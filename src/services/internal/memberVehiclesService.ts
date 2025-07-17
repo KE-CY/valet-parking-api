@@ -53,7 +53,7 @@ export class MemberVehiclesService extends BasicMethod {
     memberVehicle: Partial<MemberVehicles>,
     reqUser: User
   }): Promise<void> {
-    logger.info('In MemberVehiclesService.createMemberVehicleWithTransaction', { memberVehicle });
+    logger.info({ msg: 'In MemberVehiclesService.createMemberVehicleWithTransaction', memberVehicle });
 
     const newMemberVehicle = queryRunner.manager.create(MemberVehicles, {
       ...memberVehicle,

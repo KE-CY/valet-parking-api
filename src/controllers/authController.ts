@@ -11,7 +11,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     return res.json(new ApiResponse('success', 'OK', token));
   } catch (error) {
-    logger.error('Error during login: ', error);
+    logger.error({ msg: 'Error during login: ', error });
     next(error);
   }
 };
@@ -22,7 +22,7 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
     const token = AuthService.refreshTokens(refreshToken);
     return res.json(new ApiResponse('success', 'OK', token));
   } catch (error) {
-    logger.error('Error refresh token.', error);
+    logger.error({ msg: 'Error refresh token.', error });
     next(error);
   }
 }

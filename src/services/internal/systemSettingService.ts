@@ -99,7 +99,7 @@ export class SystemSettingService extends BasicMethod {
       if (found) {
         result[key] = found.value;
       } else {
-        logger.error(`SystemSetting "${key}" not found`);
+        logger.error({ msg: `SystemSetting "${key}" not found` });
         throw new Error(`SystemSetting "${key}" not found`);
       }
     }

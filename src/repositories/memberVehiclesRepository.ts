@@ -15,7 +15,7 @@ export class MemberVehiclesRepository extends Repository<MemberVehicles> {
     queryRunner: QueryRunner;
     createData: Partial<MemberVehicles>;
   }): Promise<MemberVehicles> {
-    logger.info('In MemberVehiclesRepository.createMemberVehiclesWithTransaction', { createData });
+    logger.info({ msg: 'In MemberVehiclesRepository.createMemberVehiclesWithTransaction', createData });
 
     const memberVehiclesRepository = queryRunner.manager.getRepository(MemberVehicles);
 

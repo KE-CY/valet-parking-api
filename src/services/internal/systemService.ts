@@ -18,7 +18,7 @@ export class SystemService {
   }
 
   static async getStaticOptions() {
-    logger.debug('In SystemService.getStaticOptions');
+    logger.debug({ msg: 'In SystemService.getStaticOptions' });
     const systemCountryList = await SystemCountryService.getSystemCountryList();
     const enumList = SystemService.getEnumList();
 

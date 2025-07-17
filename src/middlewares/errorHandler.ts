@@ -9,7 +9,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  logger.error(err.stack);
+  logger.error({ msg: 'In ErrorHandler', stack: err.stack });
 
   const statusCode = err.statusCode || 500;
   const message = err.message || ErrorCodes.SERVER_ERROR.message;

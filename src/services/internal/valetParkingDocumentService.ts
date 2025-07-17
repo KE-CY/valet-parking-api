@@ -55,7 +55,7 @@ export class ValetParkingDocumentService extends BasicMethod {
     valetParkingDocuments: Partial<ValetParkingDocument>[],
     reqUser: any
   }): Promise<void> {
-    logger.info('In ValetParkingDocumentService.createValetParkingDocumentsWithTransaction', { valetParkingDocuments });
+    logger.info({ msg: 'In ValetParkingDocumentService.createValetParkingDocumentsWithTransaction', valetParkingDocuments });
 
     const createData: Partial<ValetParkingDocument>[] = valetParkingDocuments.map(doc => ({
       ...doc,
@@ -69,6 +69,6 @@ export class ValetParkingDocumentService extends BasicMethod {
       createData,
     });
 
-    logger.info('ValetParkingDocumentService.createValetParkingDocumentsWithTransaction completed successfully');
+    logger.info({ msg: 'ValetParkingDocumentService.createValetParkingDocumentsWithTransaction completed successfully' });
   }
 }

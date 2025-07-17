@@ -9,16 +9,16 @@ import { ErrorCodes } from "../../utils/errorCodes";
 import { UserRepository, userRepository } from "../../repositories/userRepository";
 
 export class UserService extends BasicMethod {
-   static async getReqUser(id: number): Promise<User> {
-    logger.info('In UserService.getReqUser', { id });
+  static async getReqUser(id: number): Promise<User> {
+    logger.info({ msg: 'In UserService.getReqUser', id });
     const user = await userRepository.findOne({
       where: { id },
       select: ['id', 'name'],
     });
 
     if (_.isEmpty(user)) {
-      logger.error('In UserService.getReqUser', {
-        message: `User with id ${id} does not exist or is inactive.`,
+      logger.error({
+        msg: `User with id ${id} does not exist or is inactive.`,
       });
       throw new NotFoundError(ErrorCodes.USER_NOT_FOUND.message);
     }
@@ -27,7 +27,7 @@ export class UserService extends BasicMethod {
   }
 
   static async loginLocalStrategy(username: string, password: string): Promise<User> {
-    logger.debug('In UserService.loginLocalStrategy', { username });
+    logger.debug({ msg: 'In UserService.loginLocalStrategy', username });
 
     const user = await userRepository.findOne({ where: { username, isActive: true } });
     if (!user) {
@@ -44,10 +44,10 @@ export class UserService extends BasicMethod {
   }
 
   static async validateUserExistByUsername(username?: string): Promise<void> {
-    logger.info('In UserService.validateUserExistByUsername', { username });
+    logger.info({ msg: 'In UserService.validateUserExistByUsername', username });
 
     if (!username) {
-      logger.error('Username not provided');
+      logger.error({ msg: 'Username not provided' });
       throw new ValidationError('Username is required');
     }
 
@@ -56,7 +56,7 @@ export class UserService extends BasicMethod {
     });
 
     if (!_.isEmpty(user)) {
-      logger.debug('username already exists', { username });
+      logger.debug({ msg: 'username already exists', username });
       throw new ValidationError(ErrorCodes.USER_NAME_ALREADY_EXISTS.message);
     }
   }
@@ -64,7 +64,7 @@ export class UserService extends BasicMethod {
   static async createUser(
     { queryRunner, userData }: { queryRunner: QueryRunner, userData: Partial<User> }
   ) {
-    logger.debug('In UserService.createUser', { userData });
+    logger.debug({ msg: 'In UserService.createUser', userData });
     const { username, password } = userData;
 
     await UserService.validateUserExistByUsername(username);

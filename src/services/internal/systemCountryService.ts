@@ -46,11 +46,11 @@ export class SystemCountryService extends BasicMethod {
   }
 
   static async validateSystemCountryExists(id: number): Promise<SystemCountry> {
-    logger.info("In SystemCountryService.validateSystemCountryExists");
+    logger.info({ msg: "In SystemCountryService.validateSystemCountryExists" });
 
     if (!id) {
-      logger.error("In SystemCountryService.validateSystemCountryExists", {
-        message: "System country ID is required.",
+      logger.error({
+        msg: "System country ID is required.",
       });
 
       throw new NotFoundError(ErrorCodes.SYSTEM_COUNTRY_NOT_FOUND.message);
@@ -61,8 +61,9 @@ export class SystemCountryService extends BasicMethod {
     });
 
     if (!systemCountry) {
-      logger.error('In SystemCountryService.validateSystemCountryExists', {
-        message: `System country with id ${id} does not exist or is inactive.`,
+      logger.error({
+        msg: 'In SystemCountryService.validateSystemCountryExists',
+        id,
       });
 
       throw new NotFoundError(ErrorCodes.SYSTEM_COUNTRY_NOT_FOUND.message);

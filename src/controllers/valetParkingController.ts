@@ -26,7 +26,7 @@ export const valetParkingScan = async (
     return res.status(200).json(new ApiResponse('success', 'OK', fakeScanResult));
 
   } catch (error) {
-    logger.error("Error in valetParkingScan:", error);
+    logger.error({ msg: "Error in valetParkingScan:", error });
     next(error);
   }
 }
@@ -43,7 +43,7 @@ export const getValetParkingMembership = async (
     return res.status(200).json(new ApiResponse('success', 'OK', result));
 
   } catch (error) {
-    logger.error("Error in getValetParkingMembership:", error);
+    logger.error({ msg: "Error in getValetParkingMembership:", error });
     next(error);
   }
 }
@@ -97,7 +97,7 @@ export const valetParkingRegister = async (
 
     res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecord));
   } catch (error) {
-    logger.error("Error in valetParkingRegister:", error);
+    logger.error({ msg: "Error in valetParkingRegister:", error });
     await queryRunner.rollbackTransaction();
     next(error);
   } finally {
@@ -138,7 +138,7 @@ export const setParkingSpot = async (
     res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecord));
 
   } catch (error) {
-    logger.error("Error in setParkingSpot:", error);
+    logger.error({ msg: "Error in setParkingSpot:", error });
     await queryRunner.rollbackTransaction();
     next(error);
   } finally {
@@ -166,7 +166,7 @@ export const getList = async (
 
     res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecords));
   } catch (error) {
-    logger.error("Error in getList:", error);
+    logger.error({ msg: "Error in getList:", error });
     next(error);
   }
 }
@@ -205,7 +205,7 @@ export const setReserved = async (
 
     res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecord));
   } catch (error) {
-    logger.error("Error in setReserved:", error);
+    logger.error({ msg: "Error in setReserved:", error });
     await queryRunner.rollbackTransaction();
     next(error);
   } finally {
@@ -243,7 +243,7 @@ export const handOverKey = async (
 
     res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecord));
   } catch (error) {
-    logger.error("Error in handOverKey:", error);
+    logger.error({ msg: "Error in handOverKey:", error });
     await queryRunner.rollbackTransaction();
     next(error);
   } finally {
@@ -263,7 +263,7 @@ export const getOneById = async (
 
     res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecord));
   } catch (error) {
-    logger.error("Error in getOneById:", error);
+    logger.error({ msg: "Error in getOneById:", error });
     next(error);
   }
 }
@@ -298,7 +298,7 @@ export const setReturned = async (
 
     res.status(200).json(new ApiResponse('success', 'OK', valetParkingRecord));
   } catch (error) {
-    logger.error("Error in setReturned:", error);
+    logger.error({ msg: "Error in setReturned:", error });
     await queryRunner.rollbackTransaction();
     next(error);
   } finally {

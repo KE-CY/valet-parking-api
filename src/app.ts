@@ -18,10 +18,10 @@ const app = express();
 // Initialize TypeORM
 AppDataSource.initialize()
   .then(() => {
-    logger.info('TypeORM: Data Source has been initialized!');
+    logger.info({ msg: 'TypeORM: Data Source has been initialized!' });
   })
   .catch((err) => {
-    logger.error(`TypeORM: Error during Data Source initialization: ${err.message}`, { stack: err.stack });
+    logger.error({ msg: `TypeORM: Error during Data Source initialization: ${err.message}`, stack: err.stack });
   });
 
 // Middleware
