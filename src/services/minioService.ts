@@ -1,5 +1,5 @@
 import { PutObjectCommand, HeadBucketCommand, CreateBucketCommand } from '@aws-sdk/client-s3';
-import s3Client from '../config/minioClient';
+import { minioClient } from '../config/minioClient';
 import logger from '../utils/logger';
 import { FileService } from './internal/fileService';
 import { checkAllSettled } from '../utils/checkAllSettled';
@@ -30,13 +30,13 @@ export const initBucket = async () => {
 
 export const ensureBucketExists = async (bucketName: string) => {
   try {
-    await s3Client.send(new HeadBucketCommand({ Bucket: bucketName }));
+    await minioClient.send(new HeadBucketCommand({ Bucket: bucketName }));
     logger.info(`Bucket ${bucketName} exists`);
   } catch (error: any) {
     if (error.name === "NotFound" || error.name === "NoSuchBucket") {
       logger.info({ msg: `Bucket ${bucketName} does not exist, creating...` });
       try {
-        await s3Client.send(new CreateBucketCommand({ Bucket: bucketName }));
+        await minioClient.send(new CreateBucketCommand({ Bucket: bucketName }));
         logger.info({ msg: `Bucket ${bucketName} created successfully` });
       } catch (createError) {
         logger.error({ msg: `Failed to create bucket ${bucketName}`, createError });
@@ -70,7 +70,7 @@ export const uploadFileOne = async ({
 
   try {
     const command = new PutObjectCommand(params);
-    await s3Client.send(command);
+    await minioClient.send(command);
 
     const fileUrl = `${process.env.MINIO_ENDPOINT}/${bucketName}/${fileName}`;
     return fileUrl;
