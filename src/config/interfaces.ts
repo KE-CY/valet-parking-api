@@ -31,6 +31,10 @@ export interface UploadConfig {
   maxFileSize: number;
 }
 
+export interface LoggerConfig {
+  level: string
+}
+
 export interface AppConfig {
   nodeEnv: string;
   environment: string;
@@ -40,4 +44,5 @@ export interface AppConfig {
   session: SessionConfig;
   minio: MinioConfig;
   upload: UploadConfig;
+  logger: LoggerConfig;
 }

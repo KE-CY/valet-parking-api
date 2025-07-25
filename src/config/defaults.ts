@@ -32,4 +32,7 @@ export const defaultConfig: AppConfig = {
     uploadDir: 'uploads',
     maxFileSize: 10 * 1024 * 1024 * 1024, // 10GB
   },
+  logger: {
+    level: 'trace',
+  }
 };

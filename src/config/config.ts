@@ -39,7 +39,7 @@ export const config: AppConfig = {
   nodeEnv: process.env.NODE_ENV || defaultConfig.nodeEnv,
   environment: process.env.ENVIRONMENT || defaultConfig.environment,
   port: parseIntWithFallback(process.env.PORT, defaultConfig.port),
-  
+
   database: {
     type: getDatabaseType(process.env.DB_TYPE),
     host: process.env.DB_HOST || defaultConfig.database.host,
@@ -47,9 +47,9 @@ export const config: AppConfig = {
     username: process.env.DB_USERNAME || defaultConfig.database.username,
     password: process.env.DB_PASSWORD || defaultConfig.database.password,
     database: process.env.DB_NAME || defaultConfig.database.database,
-    synchronize: getBooleanValue(process.env.DB_SYNCHRONIZE, 
+    synchronize: getBooleanValue(process.env.DB_SYNCHRONIZE,
       process.env.ENVIRONMENT !== 'production'),
-    logging: getBooleanValue(process.env.DB_LOGGING, 
+    logging: getBooleanValue(process.env.DB_LOGGING,
       process.env.NODE_ENV === 'development'),
   },
 
@@ -74,6 +74,10 @@ export const config: AppConfig = {
     uploadDir: process.env.UPLOAD_DIR || defaultConfig.upload.uploadDir,
     maxFileSize: parseIntWithFallback(process.env.MAX_FILE_SIZE, defaultConfig.upload.maxFileSize),
   },
+
+  logger: {
+    level: process.env.LOG_LEVEL || defaultConfig.logger.level,
+  }
 };
 
 // Validate configuration
