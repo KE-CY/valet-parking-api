@@ -1,28 +1,28 @@
-import { Request, Response, NextFunction } from 'express'
-import { QueryRunner } from 'typeorm';
-import { AppDataSource } from '../config/typeorm-config';
-import logger from '../utils/logger';
-import { UserService } from '../services/internal/userService';
-import { ApiResponse } from '../utils/responseModel';
 
-export const register = async (req: Request, res: Response, next: NextFunction) => {
-  const queryRunner: QueryRunner = AppDataSource.createQueryRunner();
+import { NextFunction, Request, Response } from 'express';
+import { logger } from '../utils/logger';
+import { InternalServerError } from '../utils/customErrors';
+import { ResponseUtil } from '../utils/responseUtil';
+import { UserService } from '../services/userService';
+import { IUserService } from '../interfaces/services/userServiceInterface';
 
-  await queryRunner.connect();
-  await queryRunner.startTransaction();
-  const body = req.body;
+export class UserController {
+  constructor(private userService: IUserService = new UserService()) { }
 
-  try {
-    await UserService.createUser({ queryRunner, userData: body });
-    await queryRunner.commitTransaction();
+  public register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const requestId = res.locals.requestId;
+    try {
+      const registerData = req.body;
+      const userResponse = await this.userService.register(registerData, requestId);
+      ResponseUtil.success(res, userResponse, 'User register completed successfully');
+    } catch (error) {
+      logger.error({ msg: 'User register failed', error: error instanceof Error ? error.message : error })
+      const userError = new InternalServerError(
+        'User register failed',
+        error instanceof Error ? error.message : 'Unknown error occurred during user register'
+      );
 
-    res.status(200).json(new ApiResponse('success', 'OK', { msg: 'Registered successfully!' }));
-
-  } catch (error) {
-    logger.error({ msg: 'Error in register:', error });
-    await queryRunner.rollbackTransaction();
-    next(error);
-  } finally {
-    await queryRunner.release();
+      next(userError);
+    }
   }
-};
+}

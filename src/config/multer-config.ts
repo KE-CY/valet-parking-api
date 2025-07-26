@@ -1,24 +1,23 @@
 import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
+import { config } from './config';
+import logger from '../utils/logger';
 
-const storage = multer.memoryStorage();
-export const upload = multer({ storage: storage });
+// Ensure upload directory exists
+const uploadDir = path.isAbsolute(config.upload.uploadDir)
+  ? config.upload.uploadDir
+  : path.join(process.cwd(), config.upload.uploadDir);
 
-export const upload_disk = multer({
-  dest: 'dist/uploads/',
-  limits: {
-    fileSize: 10 * 1024 * 1024 * 1024,
-    fieldSize: 10 * 1024 * 1024 * 1024,
-  },
-});
-
-
-const uploadDir = path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
+  logger.debug({ msg: `Created upload directory: ${uploadDir}` });
 }
 
+// Memory storage for temporary uploads
+const memoryStorage = multer.memoryStorage();
+
+// Disk storage configuration
 const diskStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
@@ -26,8 +25,33 @@ const diskStorage = multer.diskStorage({
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname);
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+    const basename = path.basename(file.originalname, ext);
+    cb(null, `${basename}-${uniqueSuffix}${ext}`);
   }
 });
 
-export const uploadDiskStorage = multer({ storage: diskStorage });
+// Multer configurations
+export const uploadMemory = multer({
+  storage: memoryStorage,
+  limits: {
+    fileSize: config.upload.maxFileSize,
+  }
+});
+
+export const uploadDisk = multer({
+  storage: diskStorage,
+  limits: {
+    fileSize: config.upload.maxFileSize,
+  }
+});
+
+// Legacy support for existing code
+export const upload = uploadMemory;
+export const upload_disk = multer({
+  dest: path.join(uploadDir, 'temp'),
+  limits: {
+    fileSize: config.upload.maxFileSize,
+    fieldSize: config.upload.maxFileSize,
+  },
+});
+export const uploadDiskStorage = uploadDisk;

@@ -1,49 +1,81 @@
-import express from 'express';
 import bodyParser from 'body-parser';
 import { AppDataSource } from './config/typeorm-config';
-import logger from './utils/logger';
 import session from 'express-session';
-import { errorHandler } from './middlewares/errorHandler';
-import './config/passport';
+import express from "express";
+import routeManager from './routes/index';
+import logger from './utils/logger';
+import { config } from './config/config';
+import { requestIdMiddleware } from './middlewares/requestIdMiddleware';
+import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware';
+import { configurePassport } from './config/passport';
 
-import healthRoutes from './routes/healthRoute';
-import userRoutes from './routes/userRoute';
-import appRoutes from './routes/authRoute';
-import systemRoutes from './routes/systemRoutes'
-import fileRoutes from './routes/fileRoutes';
-import valetParkingRoutes from './routes/valetParkingRoutes';
+export class App {
+  private app: express.Application;
 
-const app = express();
+  constructor() {
+    this.app = express();
 
-// Initialize TypeORM
-AppDataSource.initialize()
-  .then(() => {
-    logger.info({ msg: 'TypeORM: Data Source has been initialized!' });
-  })
-  .catch((err) => {
-    logger.error({ msg: `TypeORM: Error during Data Source initialization: ${err.message}`, stack: err.stack });
-  });
+    this.initializeMiddlewares();
+    this.initializeRoutes();
+    this.initializeDBConnection();
+    this.initializeErrorHandling();
+  }
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: true, limit: '1tb' }));
-app.use(bodyParser.json({ limit: '1tb' }));
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET!,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+  private initializeMiddlewares(): void {
+    this.app.use(requestIdMiddleware);
+    this.app.use(bodyParser.urlencoded({ extended: true, limit: '1tb' }));
+    this.app.use(bodyParser.json({ limit: '1tb' }));
+    this.app.use(
+      session({
+        secret: process.env.SESSION_SECRET!,
+        resave: false,
+        saveUninitialized: true,
+      })
+    );
+    configurePassport();
+  }
 
-// Routes
-app.use('/health', healthRoutes);
-app.use('/auth', appRoutes);
-app.use('/users', userRoutes);
-app.use('/systems', systemRoutes);
-app.use('/files', fileRoutes);
-app.use('/valetParkings', valetParkingRoutes);
+  private initializeRoutes(): void {
+    routeManager.registerRoutes(this.app);
 
-// Error handling middleware
-app.use(errorHandler);
+    const routeInfo = routeManager.getRouteInfo();
+    logger.info({ msg: 'All routes registered', routes: routeInfo });
 
-export default app;
+    // 404 handler
+    this.app.use(/(.*)/, async (req: express.Request, res: express.Response) => {
+      res.status(404).json({
+        status: 'NOT_FOUND',
+        message: `Route ${req.originalUrl} not found`,
+        timestamp: new Date().toISOString()
+      });
+    });
+  }
+
+  private initializeDBConnection(): void {
+    AppDataSource.initialize()
+      .then(() => {
+        logger.info({ msg: 'TypeORM: Data Source has been initialized!' });
+      })
+      .catch((err) => {
+        logger.error({ msg: `TypeORM: Error during Data Source initialization: ${err.message}`, stack: err.stack });
+      });
+  }
+
+  private initializeErrorHandling(): void {
+    this.app.use(errorHandlerMiddleware);
+  }
+
+  public start(): void {
+    this.app.listen(config.port, () => {
+      logger.info({
+        msg: `Server started successfully`,
+        port: config.port,
+        environment: config.nodeEnv
+      });
+    });
+  }
+
+  public getApp(): express.Application {
+    return this.app;
+  }
+}

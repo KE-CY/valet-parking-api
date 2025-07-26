@@ -1,21 +1,21 @@
 import path from 'path';
 import { DataSource } from 'typeorm';
-import './config';
+import { config } from './config';
 
-const isProduction = process.env.ENVIRONMENT === 'production';
+const isProduction = config.environment === 'production';
 
 export const AppDataSource = new DataSource({
-  type: 'postgres',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  type: config.database.type,
+  host: config.database.host,
+  port: config.database.port,
+  username: config.database.username,
+  password: config.database.password,
+  database: config.database.database,
   entities: [
     isProduction
       ? path.join(__dirname, '../entities/*.js')
       : path.join(__dirname, '../entities/*.ts'),
   ],
-  synchronize: !isProduction, // Disable synchronize in production
-  // logging: !isProduction,  // Optional: Disable logging in production
+  synchronize: config.database.synchronize,
+  logging: config.database.logging,
 });

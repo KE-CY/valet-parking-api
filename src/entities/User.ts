@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserResponse } from '../interfaces/responses/userResponse';
 
 @Entity()
 export class User {
@@ -47,4 +48,15 @@ export class User {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by' })
   updatedBy?: User;
+
+  toResponse(): UserResponse {
+    return {
+      id: this.id!,
+      name: this.name,
+      username: this.username,
+      isActive: this.isActive,
+      createdAt: this.createdAt!.toISOString(),
+      updatedAt: this.updatedAt!.toISOString()
+    };
+  }
 }
