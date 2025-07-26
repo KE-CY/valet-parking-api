@@ -40,7 +40,6 @@ export default abstract class BasicRoute {
 
     // 組合前綴和路徑，避免雙重斜線
     const fullPath = `/${this.prefix}${cleanPath}`.replace(/\/+/g, '/');
-
     return fullPath;
   }
 
