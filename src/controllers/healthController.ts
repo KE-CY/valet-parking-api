@@ -1,10 +1,12 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { logger } from '../utils/logger';
 import { config } from '../config/config';
+import { ResponseUtil } from '../utils/responseUtil';
+import { InternalServerError } from '../utils/customErrors';
 
 export class HealthController {
 
-  public checkHealth = (req: Request, res: Response): void => {
+  public checkHealth = (req: Request, res: Response, next: NextFunction): void => {
     try {
       const healthStatus = {
         status: 'OK',
@@ -18,16 +20,16 @@ export class HealthController {
         ip: req.ip,
         userAgent: req.get('User-Agent')
       });
-
-      res.status(200).json(healthStatus);
+      ResponseUtil.success(res, healthStatus, 'Health check completed successfully');
     } catch (error) {
       logger.error({ msg: 'Health check failed', error: error instanceof Error ? error.message : error });
 
-      res.status(500).json({
-        status: 'ERROR',
-        timestamp: new Date().toISOString(),
-        message: 'Health check failed'
-      });
+      const healthError = new InternalServerError(
+        'Health check failed',
+        error instanceof Error ? error.message : 'Unknown error occurred during health check'
+      );
+
+      next(healthError);
     }
   };
 }

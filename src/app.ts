@@ -1,41 +1,12 @@
-// import express from 'express';
 import bodyParser from 'body-parser';
-// import { AppDataSource } from './config/typeorm-config';
+import { AppDataSource } from './config/typeorm-config';
 import session from 'express-session';
-// import './config/passport';
-
 import express from "express";
 import routeManager from './routes/index';
 import logger from './utils/logger';
 import { config } from './config/config';
-
-// const app = express();
-
-// // Initialize TypeORM
-// AppDataSource.initialize()
-//   .then(() => {
-//     // logger.info({ msg: 'TypeORM: Data Source has been initialized!' });
-//   })
-//   .catch((err) => {
-//     // logger.error({ msg: `TypeORM: Error during Data Source initialization: ${err.message}`, stack: err.stack });
-//   });
-
-// // Middleware
-// app.use(bodyParser.urlencoded({ extended: true, limit: '1tb' }));
-// app.use(bodyParser.json({ limit: '1tb' }));
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET!,
-//     resave: false,
-//     saveUninitialized: true,
-//   })
-// );
-
-// // Routes
-
-// // Error handling middleware
-
-// export default app;
+import { requestIdMiddleware } from './middlewares/requestIdMiddleware';
+import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware';
 
 export class App {
   private app: express.Application;
@@ -45,10 +16,12 @@ export class App {
 
     this.initializeMiddlewares();
     this.initializeRoutes();
-    // this.initializeErrorHandling();
+    this.initializeDBConnection();
+    this.initializeErrorHandling();
   }
 
   private initializeMiddlewares(): void {
+    this.app.use(requestIdMiddleware);
     this.app.use(bodyParser.urlencoded({ extended: true, limit: '1tb' }));
     this.app.use(bodyParser.json({ limit: '1tb' }));
     this.app.use(
@@ -74,6 +47,20 @@ export class App {
         timestamp: new Date().toISOString()
       });
     });
+  }
+
+  private initializeDBConnection(): void {
+    AppDataSource.initialize()
+      .then(() => {
+        logger.info({ msg: 'TypeORM: Data Source has been initialized!' });
+      })
+      .catch((err) => {
+        logger.error({ msg: `TypeORM: Error during Data Source initialization: ${err.message}`, stack: err.stack });
+      });
+  }
+
+  private initializeErrorHandling(): void {
+    this.app.use(errorHandlerMiddleware);
   }
 
   public start(): void {
