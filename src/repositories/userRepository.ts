@@ -52,6 +52,25 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     }
   }
 
+  async findByUsername(username: string): Promise<User | null> {
+    try {
+      logger.debug({ msg: 'UserRepository: Find user by username', username });
+
+      const user = await this.createQueryBuilder('user')
+        .where('user.username = :username', { username })
+        .getOne();
+
+      return user;
+
+    } catch (error) {
+      logger.error({ msg: 'UserRepository: find user by username.', username });
+      throw new DatabaseError(
+        'Failed find user by username',
+        error instanceof Error ? error.message : 'Unknown database error'
+      );
+    }
+  }
+
   async existsByUsername(username: string): Promise<boolean> {
     try {
       logger.debug({ msg: 'UserRepository: Check exists by username', username });

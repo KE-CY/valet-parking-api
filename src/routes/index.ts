@@ -2,6 +2,7 @@ import { Application } from 'express';
 import logger from '../utils/logger';
 
 import HealthRoutes from './healthRoutes';
+import AuthRoutes from './authRoutes';
 import UserRoutes from './userRoutes';
 
 interface RouteConfig {
@@ -20,6 +21,7 @@ export class RouteManager {
   private initializeRoutes(): void {
     this.routes = [
       { name: 'HealthRoutes', instance: new HealthRoutes(), mountPath: '/' },
+      { name: 'AuthRoutes', instance: new AuthRoutes(), mountPath: '/' },
       { name: 'UserRoutes', instance: new UserRoutes(), mountPath: '/' }
     ];
 

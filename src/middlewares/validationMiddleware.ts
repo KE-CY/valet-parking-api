@@ -77,7 +77,8 @@ export const validate = (
           value: detail.context?.value
         }));
 
-        logger.warn('Validation failed', {
+        logger.warn({
+          msg: 'Validation failed',
           target,
           errors: validationErrors,
           requestId: res.locals.requestId
@@ -147,7 +148,7 @@ export const validateMultiple = (validations: Array<{
   target: ValidationType;
   options?: ValidationOptions;
 }>) => {
-  return validations.map(({ schema, target, options }) => 
+  return validations.map(({ schema, target, options }) =>
     validate(schema, target, options)
   );
 };

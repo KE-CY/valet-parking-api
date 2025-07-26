@@ -6,4 +6,4 @@ export const registerUserSchema = Joi.object({
   employeeNo: Joi.string().required(),
   name: Joi.string().required(),
   avatarUrl: Joi.string().uri().required(),
-});
+}).options({ stripUnknown: true });

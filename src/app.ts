@@ -7,6 +7,7 @@ import logger from './utils/logger';
 import { config } from './config/config';
 import { requestIdMiddleware } from './middlewares/requestIdMiddleware';
 import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware';
+import { configurePassport } from './config/passport';
 
 export class App {
   private app: express.Application;
@@ -31,6 +32,7 @@ export class App {
         saveUninitialized: true,
       })
     );
+    configurePassport();
   }
 
   private initializeRoutes(): void {
