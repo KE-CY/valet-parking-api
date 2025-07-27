@@ -4,6 +4,7 @@ import logger from '../utils/logger';
 import HealthRoutes from './healthRoutes';
 import AuthRoutes from './authRoutes';
 import UserRoutes from './userRoutes';
+import SystemRoutes from './systemRoutes';
 
 interface RouteConfig {
   name: string;
@@ -22,7 +23,8 @@ export class RouteManager {
     this.routes = [
       { name: 'HealthRoutes', instance: new HealthRoutes(), mountPath: '/' },
       { name: 'AuthRoutes', instance: new AuthRoutes(), mountPath: '/' },
-      { name: 'UserRoutes', instance: new UserRoutes(), mountPath: '/' }
+      { name: 'UserRoutes', instance: new UserRoutes(), mountPath: '/' },
+      { name: 'SystemRoutes', instance: new SystemRoutes(), mountPath: '/' }
     ];
 
     logger.info({

@@ -8,6 +8,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 import { User } from './User';
+import { SystemCountryResponse } from '../interfaces/responses/systemResponse';
 
 @Entity('system_country')
 export class SystemCountry {
@@ -45,4 +46,14 @@ export class SystemCountry {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by' })
   updatedBy?: User;
+
+  toResponse(): SystemCountryResponse {
+    return {
+      id: this.id!,
+      alpha2Code: this.alpha2Code,
+      alpha3Code: this.alpha3Code,
+      countryCode: this.countryCode,
+      name: this.name
+    };
+  }
 }
