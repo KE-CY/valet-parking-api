@@ -19,7 +19,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     try {
       logger.debug({ msg: 'UserRepository: find all users' });
 
-      const users = this.createQueryBuilder('user').getMany();
+      const users = await this.createQueryBuilder('user').getMany();
 
       return users;
 
@@ -36,7 +36,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     try {
       logger.debug({ msg: 'UserRepository: Finding user by ID', id });
 
-      const user = this.createQueryBuilder('user')
+      const user = await this.createQueryBuilder('user')
         .where('user.id = :id', { id })
         .getOne();
 
