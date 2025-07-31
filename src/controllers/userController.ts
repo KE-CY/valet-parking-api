@@ -17,9 +17,9 @@ export class UserController {
       ResponseUtil.success(res, userResponse, 'User register completed successfully');
     } catch (error) {
       logger.error({ msg: 'User register failed', error: error instanceof Error ? error.message : error })
-      let userError;
 
-      error instanceof Error ? userError = error : userError = new InternalServerError(
+
+      const userError = error instanceof Error ? error : new InternalServerError(
         'User register failed',
         error instanceof Error ? error.message : 'Unknown error occurred during user register'
       );

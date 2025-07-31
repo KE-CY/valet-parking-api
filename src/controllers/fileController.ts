@@ -28,10 +28,11 @@ export class FileController {
     } catch (error) {
       logger.error({ msg: 'Upload files error.', error: error instanceof Error ? error.message : error });
 
-      const uploadFilesError = new InternalServerError(
+      const uploadFilesError = error instanceof Error ? error : new InternalServerError(
         'Upload Files Failed',
         error instanceof Error ? error.message : 'Unknown error occurred during upload files.'
       );
+
       next(uploadFilesError);
     }
   }

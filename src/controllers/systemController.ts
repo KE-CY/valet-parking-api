@@ -19,7 +19,7 @@ export class SystemController {
     } catch (error) {
       logger.error({ msg: 'Get static options error.', error: error instanceof Error ? error.message : error });
 
-      const getStaticOptionsError = new InternalServerError(
+      const getStaticOptionsError = error instanceof Error ? error : new InternalServerError(
         'Get Static Options Failed',
         error instanceof Error ? error.message : 'Unknown error occurred during get static options'
       );
