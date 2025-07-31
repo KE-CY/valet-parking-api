@@ -51,7 +51,6 @@ src/
 
 ### 1. 環境配置
 
-
 環境變數設定
 請依照專案根目錄中的 .env.sample 檔案建立 .env 檔案，並填入相對應的設定值
 
@@ -81,6 +80,42 @@ curl http://localhost:3000/health
 # Git Flow 流程說明
 
 本專案使用 Git Flow 流程來管理分支，主要包含 `main`和 `develop` 兩個常態分支。
+
+# Logger 使用說明
+採用物件格式來提供更好的日誌分析和追蹤能力。
+
+## 基本用法
+
+### Logger 方法
+
+```typescript
+import { logger } from './utils/logger';
+
+// 資訊日誌
+logger.info({ msg: '操作成功', userId: 123, action: 'login' });
+
+// 警告日誌
+logger.warn({ msg: '資源使用率過高', usage: '85%', threshold: '80%' });
+
+// 錯誤日誌
+logger.error({ msg: '資料庫連線失敗', error: error.message, retryCount: 3 });
+
+// 除錯日誌
+logger.debug({ msg: '函式執行', function: 'getUserById', params: { id: 123 } });
+```
+
+### 日誌格式規範
+#### 標準物件結構
+所有日誌都應該使用物件格式，包含以下基本欄位：
+
+```typescript
+{
+  msg: '日誌訊息',           // 必填：描述性訊息
+  requestId: 'XXXXXXX',    // 建議：請求追蹤 ID
+  // 其他相關欄位...         // 選填：上下文資訊
+}
+```
+
 
 # 其他資訊
 
