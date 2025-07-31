@@ -5,6 +5,7 @@ import HealthRoutes from './healthRoutes';
 import AuthRoutes from './authRoutes';
 import UserRoutes from './userRoutes';
 import SystemRoutes from './systemRoutes';
+import FileRoutes from './fileRoutes';
 
 interface RouteConfig {
   name: string;
@@ -24,7 +25,8 @@ export class RouteManager {
       { name: 'HealthRoutes', instance: new HealthRoutes(), mountPath: '/' },
       { name: 'AuthRoutes', instance: new AuthRoutes(), mountPath: '/' },
       { name: 'UserRoutes', instance: new UserRoutes(), mountPath: '/' },
-      { name: 'SystemRoutes', instance: new SystemRoutes(), mountPath: '/' }
+      { name: 'SystemRoutes', instance: new SystemRoutes(), mountPath: '/' },
+      { name: 'FileRoutes', instance: new FileRoutes(), mountPath: '/' }
     ];
 
     logger.info({

@@ -24,6 +24,7 @@ export interface MinioConfig {
   endpoint: string;
   rootUser: string;
   rootPassword: string;
+  defaultBucket?: string;
 }
 
 export interface UploadConfig {
