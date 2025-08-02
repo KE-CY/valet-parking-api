@@ -86,7 +86,7 @@ export class AuthController {
     } catch (error) {
       logger.error({ msg: 'Refresh Token Error', error: error instanceof Error ? error.message : error })
 
-      const refreshTokenError = new InternalServerError(
+      const refreshTokenError = error instanceof Error ? error : new InternalServerError(
         'Refresh Toke failed',
         error instanceof Error ? error.message : 'Unknown error occurred during refresh token'
       );

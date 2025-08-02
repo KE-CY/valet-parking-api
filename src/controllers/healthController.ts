@@ -24,7 +24,7 @@ export class HealthController {
     } catch (error) {
       logger.error({ msg: 'Health check failed', error: error instanceof Error ? error.message : error });
 
-      const healthError = new InternalServerError(
+      const healthError = error instanceof Error ? error : new InternalServerError(
         'Health check failed',
         error instanceof Error ? error.message : 'Unknown error occurred during health check'
       );

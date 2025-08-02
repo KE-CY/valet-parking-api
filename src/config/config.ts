@@ -68,6 +68,7 @@ export const config: AppConfig = {
     endpoint: process.env.MINIO_ENDPOINT || defaultConfig.minio.endpoint,
     rootUser: process.env.MINIO_ROOT_USER || defaultConfig.minio.rootUser,
     rootPassword: process.env.MINIO_ROOT_PASSWORD || defaultConfig.minio.rootPassword,
+    defaultBucket: process.env.MINIO_DEFAULT_BUCKET || defaultConfig.minio.defaultBucket,
   },
 
   upload: {

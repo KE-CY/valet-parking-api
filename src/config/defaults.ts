@@ -27,6 +27,7 @@ export const defaultConfig: AppConfig = {
     endpoint: 'http://localhost:9000',
     rootUser: 'minioadmin',
     rootPassword: 'minioadmin',
+    defaultBucket: 'valet-parking',
   },
   upload: {
     uploadDir: 'uploads',
